@@ -12,15 +12,12 @@ let currentUser = null;
 
 // Utility to show messages
 function showMessage(message, type) {
-  const messageBox = document.getElementById("messageBox");
+  const messageBox = document.createElement("div");
   messageBox.textContent = message;
   messageBox.className = type === "success" ? "success" : "error";
-  messageBox.style.display = "block";
+  document.body.appendChild(messageBox);
 
-  // Hide the message after 3 seconds
-  setTimeout(() => {
-    messageBox.style.display = "none";
-  }, 3000);
+  setTimeout(() => messageBox.remove(), 3000);
 }
 
 // Firebase Authentication - Login & Logout
@@ -28,7 +25,7 @@ loginButton.addEventListener("click", () => {
   const email = prompt("Enter your email:");
   const password = prompt("Enter your password:");
 
-  firebaseAuth.signInWithEmailAndPassword(email, password)
+  auth.signInWithEmailAndPassword(email, password)
     .then(userCredential => {
       currentUser = userCredential.user;
       profileSection.classList.remove("hidden");
@@ -43,7 +40,7 @@ loginButton.addEventListener("click", () => {
 });
 
 logoutButton.addEventListener("click", () => {
-  firebaseAuth.signOut().then(() => {
+  auth.signOut().then(() => {
     currentUser = null;
     profileSection.classList.add("hidden");
     reviewForm.classList.add("hidden");
@@ -53,7 +50,7 @@ logoutButton.addEventListener("click", () => {
 
 // Load User Profile and Media
 function loadUserProfile(user) {
-  const userRef = firebaseDatabase.ref("users/" + user.uid);
+  const userRef = database.ref("users/" + user.uid);
   userRef.once("value").then(snapshot => {
     const userData = snapshot.val();
     profilePicture.src = userData ? userData.profilePic || "default.jpg" : "default.jpg";
@@ -61,7 +58,7 @@ function loadUserProfile(user) {
 }
 
 function loadMediaItems() {
-  const mediaRef = firebaseDatabase.ref("media");
+  const mediaRef = database.ref("media");
   mediaRef.once("value").then(snapshot => {
     const mediaItems = snapshot.val();
     mediaList.innerHTML = "";
@@ -98,7 +95,7 @@ function submitReview(mediaId) {
     timestamp: new Date().toISOString(),
   };
 
-  const reviewsRef = firebaseDatabase.ref("reviews/" + mediaId);
+  const reviewsRef = database.ref("reviews/" + mediaId);
   reviewsRef
     .push(reviewData)
     .then(() => {
