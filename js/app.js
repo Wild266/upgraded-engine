@@ -10,6 +10,19 @@ const usernameDisplay = document.getElementById("username");
 
 let currentUser = null;
 
+// Utility to show messages
+function showMessage(message, type) {
+  const messageBox = document.getElementById("messageBox");
+  messageBox.textContent = message;
+  messageBox.className = type === "success" ? "success" : "error";
+  messageBox.style.display = "block";
+
+  // Hide the message after 3 seconds
+  setTimeout(() => {
+    messageBox.style.display = "none";
+  }, 3000);
+}
+
 // Firebase Authentication - Login & Logout
 loginButton.addEventListener("click", () => {
   const email = prompt("Enter your email:");
@@ -22,8 +35,11 @@ loginButton.addEventListener("click", () => {
       usernameDisplay.textContent = currentUser.email;
       loadUserProfile(currentUser);
       loadMediaItems();
+      showMessage("Login successful! Welcome back.", "success");
     })
-    .catch(error => alert("Authentication failed: " + error.message));
+    .catch(error => {
+      showMessage("Login failed: " + error.message, "error");
+    });
 });
 
 logoutButton.addEventListener("click", () => {
@@ -31,27 +47,27 @@ logoutButton.addEventListener("click", () => {
     currentUser = null;
     profileSection.classList.add("hidden");
     reviewForm.classList.add("hidden");
-    alert("You have logged out.");
+    showMessage("You have logged out.", "success");
   });
 });
 
 // Load User Profile and Media
 function loadUserProfile(user) {
-  const userRef = database.ref('users/' + user.uid);
-  userRef.once('value').then(snapshot => {
+  const userRef = database.ref("users/" + user.uid);
+  userRef.once("value").then(snapshot => {
     const userData = snapshot.val();
     profilePicture.src = userData ? userData.profilePic || "default.jpg" : "default.jpg";
   });
 }
 
 function loadMediaItems() {
-  const mediaRef = database.ref('media');
-  mediaRef.once('value').then(snapshot => {
+  const mediaRef = database.ref("media");
+  mediaRef.once("value").then(snapshot => {
     const mediaItems = snapshot.val();
-    mediaList.innerHTML = '';
+    mediaList.innerHTML = "";
     for (const id in mediaItems) {
       const mediaItem = mediaItems[id];
-      const mediaDiv = document.createElement('div');
+      const mediaDiv = document.createElement("div");
       mediaDiv.innerHTML = `
         <h3>${mediaItem.title}</h3>
         <button onclick="showReviewForm('${id}')">Rate this</button>
@@ -70,18 +86,24 @@ function submitReview(mediaId) {
   const reviewText = document.getElementById("reviewText").value;
   const rating = document.getElementById("rating").value;
 
+  if (rating < 1 || rating > 5) {
+    showMessage("Rating must be between 1 and 5.", "error");
+    return;
+  }
+
   const reviewData = {
     username: currentUser.email,
     reviewText,
     rating,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
-  const reviewsRef = database.ref('reviews/' + mediaId);
-  reviewsRef.push(reviewData)
+  const reviewsRef = database.ref("reviews/" + mediaId);
+  reviewsRef
+    .push(reviewData)
     .then(() => {
-      alert("Review submitted!");
+      showMessage("Review submitted!", "success");
       reviewForm.classList.add("hidden");
     })
-    .catch(error => alert("Failed to submit review: " + error.message));
+    .catch(error => showMessage("Failed to submit review: " + error.message, "error"));
 }
