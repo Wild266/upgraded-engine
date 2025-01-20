@@ -28,7 +28,7 @@ loginButton.addEventListener("click", () => {
   const email = prompt("Enter your email:");
   const password = prompt("Enter your password:");
 
-  auth.signInWithEmailAndPassword(email, password)
+  firebaseAuth.signInWithEmailAndPassword(email, password)
     .then(userCredential => {
       currentUser = userCredential.user;
       profileSection.classList.remove("hidden");
@@ -43,7 +43,7 @@ loginButton.addEventListener("click", () => {
 });
 
 logoutButton.addEventListener("click", () => {
-  auth.signOut().then(() => {
+  firebaseAuth.signOut().then(() => {
     currentUser = null;
     profileSection.classList.add("hidden");
     reviewForm.classList.add("hidden");
@@ -53,7 +53,7 @@ logoutButton.addEventListener("click", () => {
 
 // Load User Profile and Media
 function loadUserProfile(user) {
-  const userRef = database.ref("users/" + user.uid);
+  const userRef = firebaseDatabase.ref("users/" + user.uid);
   userRef.once("value").then(snapshot => {
     const userData = snapshot.val();
     profilePicture.src = userData ? userData.profilePic || "default.jpg" : "default.jpg";
@@ -61,7 +61,7 @@ function loadUserProfile(user) {
 }
 
 function loadMediaItems() {
-  const mediaRef = database.ref("media");
+  const mediaRef = firebaseDatabase.ref("media");
   mediaRef.once("value").then(snapshot => {
     const mediaItems = snapshot.val();
     mediaList.innerHTML = "";
@@ -98,7 +98,7 @@ function submitReview(mediaId) {
     timestamp: new Date().toISOString(),
   };
 
-  const reviewsRef = database.ref("reviews/" + mediaId);
+  const reviewsRef = firebaseDatabase.ref("reviews/" + mediaId);
   reviewsRef
     .push(reviewData)
     .then(() => {
