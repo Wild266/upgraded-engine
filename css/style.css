@@ -47,3 +47,27 @@ input[type="number"] {
   width: 50px;
   margin-bottom: 10px;
 }
+
+/* Message Box Styling */
+#messageBox {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  z-index: 1000;
+  display: none;
+}
+
+#messageBox.success {
+  background-color: #28a745;
+  color: white;
+}
+
+#messageBox.error {
+  background-color: #dc3545;
+  color: white;
+}
