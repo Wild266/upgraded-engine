@@ -1,45 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShaneBoxd</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <div id="app">
-    <header>
-      <h1>Welcome to ShaneBoxd</h1>
-      <button id="loginButton">Login</button>
-      <div id="profileSection" class="hidden">
-        <img id="profilePicture" src="" alt="Profile Picture">
-        <span id="username"></span>
-        <button id="logoutButton">Logout</button>
-      </div>
-    </header>
+<!-- Firebase SDK for Firebase App and Firebase Authentication -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+  import { getAuth } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+  import { getDatabase } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+  import { getStorage } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js';
 
-    <main>
-      <h2>Rate Media This Week</h2>
-      <div id="mediaList"></div>
-      <div id="reviewForm" class="hidden">
-        <textarea id="reviewText" placeholder="Write your review..."></textarea>
-        <input type="number" id="rating" min="1" max="5" placeholder="Rating (1-5)">
-        <button id="submitReview">Submit Review</button>
-      </div>
-    </main>
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-PKn49UIFgqgwzPvvMuIIG58QB0E_MdY",
+    authDomain: "upgraded-engine.firebaseapp.com",
+    projectId: "upgraded-engine",
+    storageBucket: "upgraded-engine.firebasestorage.app",
+    messagingSenderId: "2995979729",
+    appId: "1:2995979729:web:3cc878af31b2efd38c4cf0",
+    measurementId: "G-P8QMTGBLTG"
+  };
 
-    <!-- Message Box -->
-    <div id="messageBox" class="hidden"></div>
-  </div>
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+  const storage = getStorage(app);
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js"></script>
-
-  <!-- Firebase Config & App Logic -->
-  <script src="firebase-config.js"></script>
-  <script src="js/app.js"></script>
-</body>
-</html>
+  window.firebaseApp = app;
+  window.firebaseAuth = auth;
+  window.firebaseDatabase = database;
+  window.firebaseStorage = storage;
+</script>
